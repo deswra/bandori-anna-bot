@@ -1,0 +1,23 @@
+{
+  "name": "bandori-anna-bot",
+  "version": "0.0.1",
+  "description": "Discord bot for private bandori server",
+  "main": "anna.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node anna.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deswra/bandori-anna-bot.git"
+  },
+  "author": "Des",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deswra/bandori-anna-bot/issues"
+  },
+  "homepage": "https://github.com/deswra/bandori-anna-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2"
+  }
+}
