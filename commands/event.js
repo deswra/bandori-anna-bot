@@ -40,17 +40,17 @@ async function createCurrentEventResponse() {
   // Create description for event time
   const now = moment();
   let description = '';
-  let timeLeft;
   let startDate = moment(parseInt(currentEvent.startAt));
   let endDate = moment(parseInt(currentEvent.endAt));
+  let timeToStart = eventDuration(startDate, now);
+  let timeToEnd = eventDuration(endDate, now);
   if (now < startDate) {
-    timeLeft = eventDuration(startDate, now);
-    description += `*Bắt đầu:* ${startDate.add(7,'hours').format('YYYY-M-D H:mm')} (còn ${timeLeft})\n`;
+    description += `:white_small_square: **Bắt đầu:** ${startDate.add(7,'hours').format('H:mm - D/M/YYYY')} (còn ${timeToStart})\n`;
+    description += `:white_small_square: **Kết thúc:** ${endDate.add(7,'hours').format('H:mm - D/M/YYYY')}`;
   } else {
-    description += `*Bắt đầu:* ${startDate.add(7,'hours').format('YYYY-M-D H:mm')}\n`;
+    description += `:white_small_square: **Bắt đầu:** ${startDate.add(7,'hours').format('H:mm - D/M/YYYY')}\n`;
+    description += `:white_small_square: **Kết thúc:** ${endDate.add(7,'hours').format('H:mm - D/M/YYYY')} (còn ${timeToEnd})`;
   }
-  timeLeft = eventDuration(endDate, now);
-  description += `*Kết thúc:* ${endDate.add(7,'hours').format('YYYY-M-D H:mm')} (còn ${timeLeft})`;
   // Create char bonuses string
   let charBonuses = '';
   currentEvent.detail.characters.forEach(char => {
@@ -66,11 +66,11 @@ async function createCurrentEventResponse() {
     .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
   if (t100Cutoff.length > 0) {
     const lastT100Cutoff = t100Cutoff.pop();
-    response.addField('Top 100', `${lastT100Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT100Cutoff.time)*1000).add(7, 'hours').format('YYYY-M-D H:mm')})`);
+    response.addField('Top 100', `${lastT100Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT100Cutoff.time)*1000).add(7, 'hours').format('H:mm - D/M/YYYY')})`);
   }
   if (t1000Cutoff.length > 0) {
     const lastT1000Cutoff = t1000Cutoff.pop();
-    response.addField('Top 1000', `${lastT1000Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT1000Cutoff.time)*1000).add(7, 'hours').format('YYYY-M-D H:mm')})`);
+    response.addField('Top 1000', `${lastT1000Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT1000Cutoff.time)*1000).add(7, 'hours').format('H:mm - D/M/YYYY')})`);
   }
   return response;
 }
@@ -83,8 +83,8 @@ async function createFutureEventResponse(eventId) {
   let startDate = moment(parseInt(event.startAt[1]));
   let endDate = moment(parseInt(event.endAt[1]));
   let timeLeft = eventDuration(startDate, now);
-  description += `*Bắt đầu:* ${startDate.add(7,'hours').format('YYYY-M-D H:mm')} (còn ${timeLeft})\n`;
-  description += `*Kết thúc:* ${endDate.add(7,'hours').format('YYYY-M-D H:mm')}`;
+  description += `:white_small_square: **Bắt đầu:** ${startDate.add(7,'hours').format('H:mm - D/M/YYYY')} (còn ${timeLeft})\n`;
+  description += `:white_small_square: **Kết thúc:** ${endDate.add(7,'hours').format('H:mm - D/M/YYYY')}`;
   // Create char bonuses string
   let charBonuses = '';
   event.characters.forEach(char => {
@@ -108,8 +108,8 @@ async function createPastEventResponse(eventId) {
   let description = '';
   let startDate = moment(parseInt(event.startAt[1]));
   let endDate = moment(parseInt(event.endAt[1]));
-  description += `*Bắt đầu:* ${startDate.add(7,'hours').format('YYYY-M-D H:mm')}\n`;
-  description += `*Kết thúc:* ${endDate.add(7,'hours').format('YYYY-M-D H:mm')}`;
+  description += `:white_small_square: **Bắt đầu:** ${startDate.add(7,'hours').format('H:mm - D/M/YYYY')}\n`;
+  description += `:white_small_square: **Kết thúc:** ${endDate.add(7,'hours').format('H:mm - D/M/YYYY')}`;
   let duration = moment.duration(endDate - startDate).asHours();
   let charBonuses = '';
   event.characters.forEach(char => {
@@ -124,9 +124,9 @@ async function createPastEventResponse(eventId) {
     .setImage(`https://res.bandori.ga/assets-en/homebanner_rip/banner_event${eventId}.png`)
     .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
   tier.forEach(rank => {
-    if (archive[eventId].cutoff[1][rank]){
+    if (archive[eventId].cutoff[1][rank]) {
       response.addField(`Rank ${rank}`, archive[eventId].cutoff[1][rank], true);
-      response.addField(`Rank ${rank}/h`, Math.floor(archive[eventId].cutoff[1][rank]/duration), true);
+      response.addField(`Rank ${rank}/h`, Math.floor(archive[eventId].cutoff[1][rank] / duration), true);
     }
   })
   return response;
