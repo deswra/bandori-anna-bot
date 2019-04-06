@@ -4,18 +4,36 @@ const {
   getSongs
 } = require('../functions/bestdori');
 
-async function createUnreleasedSongResponse() {
+async function createUnreleasedSongArray() {
   const songs = await getSongs(5);
   let songArray = Object.values(songs);
   const now = moment();
-  let response = '**Những bài hát đã có trong game nhưng chưa được ra mắt:**\n';
+  let responseArray = [];
   songArray.forEach(song => {
     if (song.publishedAt[1] != null) {
       const publishedTime = moment(parseInt(song.publishedAt[1]));
       if (publishedTime > now) {
-        response += `:musical_keyboard: ${song.musicTitle[1]} - ${publishedTime.add(7, 'hours').format('H:mm D/M/YYYY')}\n`;
+        responseArray.push({
+          songName: song.musicTitle[1],
+          publishedTime
+        })
       }
     }
+  })
+  return responseArray;
+}
+
+async function createUnreleasedSongResponse() {
+  let songArray = await createUnreleasedSongArray();
+  let response = '**Những bài hát đã có trong game nhưng chưa được ra mắt:**\n';
+  console.log(songArray);
+  songArray.sort((a, b) => {
+    return a.publishedTime - b.publishedTime;
+  });
+  console.log(songArray);
+  songArray.forEach(song => {
+    console.log(song.publishedTime);
+    response += `:musical_keyboard: ${song.songName} - ${song.publishedTime.add(7, 'hours').format('H:mm D/M/YYYY')}\n`;
   })
   return response;
 }
