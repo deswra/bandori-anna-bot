@@ -11,8 +11,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 function getCharId(charName) {
   let id = 0;
+  charName = charName.toLowerCase();
   for (let [key, value] of Object.entries(chars)) {
-    if (value.name.toLowerCase() === charName.toLowerCase()) {
+    if (value.name.toLowerCase() === charName) {
       id = key;
       break;
     }

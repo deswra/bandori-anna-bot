@@ -35,5 +35,8 @@ module.exports = {
   },
   async getCutOff(eventId, server = 1, tier = 1) {
     return fetch(`${link}/tracker/data.php?event=${eventId}&server=${server}&tier=${tier}`).then(res => res.json()).then(json => json.data);
+  },
+  async getBands() {
+    return fetch(`${link}/bands/all.1.json`).then(res=>res.json());
   }
 };
