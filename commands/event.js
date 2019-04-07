@@ -62,7 +62,7 @@ async function createCurrentEventResponse() {
     .setDescription(description)
     .addField('Loại', capitalizeFirstLetter(currentEvent.eventType), true)
     .addField('Nhân vật', charBonuses, true)
-    .setImage(`https://res.bandori.ga/assets-en/homebanner_rip/banner_event${currentEvent.eventId}.png`)
+    .setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${currentEvent.eventId}.png`)
     .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
   if (t100Cutoff.length > 0) {
     const lastT100Cutoff = t100Cutoff.pop();
@@ -96,8 +96,8 @@ async function createFutureEventResponse(eventId) {
     .setDescription(description)
     .addField('Loại', capitalizeFirstLetter(event.eventType), true)
     .addField('Nhân vật', charBonuses, true)
-    .setImage(`https://res.bandori.ga/assets-en/homebanner_rip/banner_event${eventId}.png`)
-    .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
+    .setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`)
+    .setFooter('Dữ liệu được lấy từ bestdori.com.');
   return response;
 }
 
@@ -121,8 +121,16 @@ async function createPastEventResponse(eventId) {
     .setDescription(description)
     .addField('Loại', capitalizeFirstLetter(event.eventType), true)
     .addField('Nhân vật', charBonuses, true)
-    .setImage(`https://res.bandori.ga/assets-en/homebanner_rip/banner_event${eventId}.png`)
-    .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
+    .setFooter('Dữ liệu được lấy từ bestdori.com.');
+  if (eventId <= 2) {
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner-0${14+eventId*2}.png`);
+  } else if (eventId <= 9) {
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event0${eventId}_open.png`);
+  } else if (eventId <= 12){
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}_open.png`);
+  } else {
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`);
+  }
   tier.forEach(rank => {
     if (archive[eventId].cutoff[1][rank]) {
       response.addField(`Rank ${rank}`, archive[eventId].cutoff[1][rank], true);
