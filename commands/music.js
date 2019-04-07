@@ -26,13 +26,10 @@ async function createUnreleasedSongArray() {
 async function createUnreleasedSongResponse() {
   let songArray = await createUnreleasedSongArray();
   let response = '**Những bài hát đã có trong game nhưng chưa được ra mắt:**\n';
-  console.log(songArray);
   songArray.sort((a, b) => {
     return a.publishedTime - b.publishedTime;
   });
-  console.log(songArray);
   songArray.forEach(song => {
-    console.log(song.publishedTime);
     response += `:musical_keyboard: ${song.songName} - ${song.publishedTime.add(7, 'hours').format('H:mm D/M/YYYY')}\n`;
   })
   return response;
@@ -44,5 +41,5 @@ module.exports.run = async (anna, message, args) => {
 }
 
 module.exports.help = {
-  name: 'song'
+  name: 'music'
 };
