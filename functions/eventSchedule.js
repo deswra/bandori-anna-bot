@@ -8,27 +8,23 @@ module.exports = {
     const event = await bandoridb.getCurrentEvent();
     let startDate = new Date(parseInt(event.startAt));
     let endDate = new Date(parseInt(event.endAt));
-    endDate.setHours(endDate.getHours() - 1);
+    let lastHourFromEndDate = new Date(endDate);
+    lastHourFromEndDate.setHours(lastHourFromEndDate.getHours() - 1);
+    let getNewEventDate = new Date(endDate);
+    getNewEventDate.setHours(getNewEventDate.getHours() + 1);
     const startSchedule = schedule.scheduleJob(startDate, () => {
-      startChannel.send(
-        `@everyone: mọi người ơi, event ${event.eventName} đã bắt đầu rồi đấy!`
-      );
+      return startChannel.send(`@everyone: mọi người ơi, event ${event.eventName} đã bắt đầu rồi đấy!`);
     });
-    const endSchedule = schedule.scheduleJob(endDate, () => {
-      endChannel.send(
-        `Mọi người ơi! Chỉ còn 1 giờ nữa là event ${
-          event.eventName
-        } sẽ kết thúc đấy!`
-      );
-      setTimeout(
-        createSchedule(anna, startChannel, endChannel, logChannel),
-        10000
-      );
+    const endSchedule = schedule.scheduleJob(lastHourFromEndDate, () => {
+      return endChannel.send(`Mọi người ơi! Chỉ còn 1 giờ nữa là event ${event.eventName} sẽ kết thúc đấy!`);
+    });
+    const getNewEventSchedule = schedule.scheduleJob(getNewEventDate, () => {
+      return this.createSchedule(anna, startChannel, endChannel, logChannel);
     });
     return logChannel.send(
       `Anna sẽ thông báo event ${event.eventName} vào ${moment(startDate)
         .add(7, 'hours')
-        .format('H:mm - D/M/YYYY')} và ${moment(endDate)
+        .format('H:mm - D/M/YYYY')} và ${moment(lastHourFromEndDate)
         .add(7, 'hours')
         .format('H:mm - D/M/YYYY')}.`
     );
