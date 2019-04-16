@@ -1,8 +1,6 @@
 const moment = require('moment');
 
-const {
-  getSongs
-} = require('../functions/bestdori');
+const { getSongs } = require('../functions/bestdori');
 
 async function createUnreleasedSongArray() {
   const songs = await getSongs(5);
@@ -16,10 +14,10 @@ async function createUnreleasedSongArray() {
         responseArray.push({
           songName: song.musicTitle[1],
           publishedTime
-        })
+        });
       }
     }
-  })
+  });
   return responseArray;
 }
 
@@ -30,15 +28,17 @@ async function createUnreleasedSongResponse() {
     return a.publishedTime - b.publishedTime;
   });
   songArray.forEach(song => {
-    response += `:musical_keyboard: ${song.songName} - ${song.publishedTime.add(7, 'hours').format('H:mm D/M/YYYY')}\n`;
-  })
+    response += `:musical_keyboard: ${song.songName} - ${song.publishedTime
+      .add(7, 'hours')
+      .format('H:mm D/M/YYYY')}\n`;
+  });
   return response;
 }
 
 module.exports.run = async (anna, message, args) => {
   const response = await createUnreleasedSongResponse();
   return message.channel.send(response);
-}
+};
 
 module.exports.help = {
   name: 'music'

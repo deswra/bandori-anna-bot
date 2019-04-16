@@ -6,7 +6,7 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const anna = new Discord.Client();
 
-const {createSchedule} = require('./functions/eventSchedule');
+const { createSchedule } = require('./functions/eventSchedule');
 
 const Channels = {};
 // Read commands files
@@ -36,7 +36,12 @@ anna.once('ready', async () => {
   Channels.startChannel = anna.channels.get(process.env.ANNOUNCEMENT_CHANNEL);
   Channels.endChannel = anna.channels.get(process.env.GENERAL_CHANNEL);
   Channels.logChannel = anna.channels.get(process.env.LOG_CHANNEL);
-  createSchedule(anna, Channels.startChannel, Channels.endChannel, Channels.logChannel);
+  createSchedule(
+    anna,
+    Channels.startChannel,
+    Channels.endChannel,
+    Channels.logChannel
+  );
   Channels.logChannel.send('Anna is ready!');
 });
 
@@ -54,6 +59,6 @@ anna.on('message', async message => {
 
   let commandFile = anna.commands.get(cmd);
   if (commandFile) commandFile.run(anna, message, args);
-})
+});
 
 anna.login(process.env.TOKEN);

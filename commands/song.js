@@ -1,11 +1,7 @@
 const moment = require('moment');
 const Discord = require('discord.js');
 
-const {
-  getSongs,
-  getSong,
-  getBands
-} = require('../functions/bestdori');
+const { getSongs, getSong, getBands } = require('../functions/bestdori');
 
 async function getSongId(songName) {
   songName = songName.toLowerCase();
@@ -23,7 +19,7 @@ async function getSongId(songName) {
 }
 
 async function createSongResponse(anna, channel, songId) {
-  const AinyaGasm = anna.emojis.find(emoji => emoji.name === "AinyaGasm");
+  const AinyaGasm = anna.emojis.find(emoji => emoji.name === 'AinyaGasm');
   const [song, bands] = await Promise.all([getSong(songId), getBands()]);
   let howToGet = AinyaGasm;
   let releaseDate = AinyaGasm;
@@ -31,12 +27,20 @@ async function createSongResponse(anna, channel, songId) {
     howToGet = song.howToGet[1];
   }
   if (song.publishedAt[1] != null) {
-    releaseDate = moment(parseInt(song.publishedAt[1])).add(7, 'hours').format('H:mm - D/M/YYYY');
+    releaseDate = moment(parseInt(song.publishedAt[1]))
+      .add(7, 'hours')
+      .format('H:mm - D/M/YYYY');
   }
   const response = new Discord.RichEmbed()
     .setAuthor(`🎵  ${song.musicTitle[1]} - ${bands[song.bandId].bandName[1]}`)
-    .setDescription(`Chart và simulator: https://bestdori.com/tool/chart/${songId}/expert`)
-    .setThumbnail(`https://bestdori.com/assets/jp/musicjacket/${song.jacketImage}_rip/jacket.png`)
+    .setDescription(
+      `Chart và simulator: https://bestdori.com/tool/chart/${songId}/expert`
+    )
+    .setThumbnail(
+      `https://bestdori.com/assets/jp/musicjacket/${
+        song.jacketImage
+      }_rip/jacket.png`
+    )
     .addField('Thời gian ra mắt', releaseDate, true)
     .addField('Độ dài', `${Math.floor(parseInt(song.length))}s`, true)
     .addField('Cách nhận', howToGet, false)

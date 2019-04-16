@@ -51,22 +51,25 @@ async function getQuote(channel, charName = 'random') {
         .setThumbnail(chars[quote.char].thumbnail)
         .setDescription(quote.content);
       return channel.send(response);
-    })
+    });
   } else {
-    Quote.find({
-      char
-    }, (err, foundQuotes) => {
-      if (foundQuotes.length == 0) {
-        return channel.send('Nhân vật đó chưa có quote nào...');
+    Quote.find(
+      {
+        char
+      },
+      (err, foundQuotes) => {
+        if (foundQuotes.length == 0) {
+          return channel.send('Nhân vật đó chưa có quote nào...');
+        }
+        let index = Math.floor(Math.random() * foundQuotes.length);
+        quote = foundQuotes[index];
+        response
+          .setAuthor(chars[quote.char].name)
+          .setThumbnail(chars[quote.char].thumbnail)
+          .setDescription(quote.content);
+        return channel.send(response);
       }
-      let index = Math.floor(Math.random() * foundQuotes.length);
-      quote = foundQuotes[index];
-      response
-        .setAuthor(chars[quote.char].name)
-        .setThumbnail(chars[quote.char].thumbnail)
-        .setDescription(quote.content);
-      return channel.send(response);
-    })
+    );
   }
 }
 
@@ -82,7 +85,7 @@ module.exports.run = async (anna, message, args) => {
   } else {
     return getQuote(message.channel);
   }
-}
+};
 
 module.exports.help = {
   name: 'quote'
