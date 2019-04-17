@@ -2,19 +2,18 @@ const Discord = require('discord.js');
 const moment = require('moment');
 
 const { getCurrentEvent } = require('../functions/bandoridb');
-const {
-  getEvents,
-  getEvent,
-  getCutOff,
-  getArchive
-} = require('../functions/bestdori');
-const {
-  eventDuration,
-  capitalizeFirstLetter
-} = require('../functions/helpers');
+const { getEvents, getEvent, getCutOff, getArchive } = require('../functions/bestdori');
+const { eventDuration } = require('../functions/helpers');
 const types = require('../resources/types');
 const chars = require('../resources/chars');
 
+const eventTypeNames = {
+  challenge: 'Challenge Live',
+  story: 'Normal',
+  versus: 'VS Live',
+  live_try: 'Live Goals',
+  mission_live: 'Mission Live'
+};
 const tier = ['1', '10', '100', '1000'];
 
 async function searchEvent(searchString) {
@@ -49,13 +48,9 @@ async function createCurrentEventResponse() {
     description += `:white_small_square: **Bắt đầu:** ${startDate
       .add(7, 'hours')
       .format('H:mm - D/M/YYYY')} (còn ${timeToStart})\n`;
-    description += `:white_small_square: **Kết thúc:** ${endDate
-      .add(7, 'hours')
-      .format('H:mm - D/M/YYYY')}`;
+    description += `:white_small_square: **Kết thúc:** ${endDate.add(7, 'hours').format('H:mm - D/M/YYYY')}`;
   } else {
-    description += `:white_small_square: **Bắt đầu:** ${startDate
-      .add(7, 'hours')
-      .format('H:mm - D/M/YYYY')}\n`;
+    description += `:white_small_square: **Bắt đầu:** ${startDate.add(7, 'hours').format('H:mm - D/M/YYYY')}\n`;
     description += `:white_small_square: **Kết thúc:** ${endDate
       .add(7, 'hours')
       .format('H:mm - D/M/YYYY')} (còn ${timeToEnd})`;
@@ -67,26 +62,17 @@ async function createCurrentEventResponse() {
   });
   const response = new Discord.RichEmbed()
     .setColor(types[currentEvent.detail.attributes[0].attribute].color)
-    .setAuthor(
-      currentEvent.eventName,
-      types[currentEvent.detail.attributes[0].attribute].icon
-    )
+    .setAuthor(currentEvent.eventName, types[currentEvent.detail.attributes[0].attribute].icon)
     .setDescription(description)
-    .addField('Loại', capitalizeFirstLetter(currentEvent.eventType), true)
+    .addField('Loại', eventTypeNames[currentEvent.eventType], true)
     .addField('Nhân vật', charBonuses, true)
-    .setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner_event${
-        currentEvent.eventId
-      }.png`
-    )
+    .setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${currentEvent.eventId}.png`)
     .setFooter('Dữ liệu được lấy từ bandori.ga và bestdori.com.');
   if (t100Cutoff.length > 0) {
     const lastT100Cutoff = t100Cutoff.pop();
     response.addField(
       'Top 100',
-      `${lastT100Cutoff.ep} (cập nhật lúc ${moment(
-        parseInt(lastT100Cutoff.time) * 1000
-      )
+      `${lastT100Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT100Cutoff.time) * 1000)
         .add(7, 'hours')
         .format('H:mm - D/M/YYYY')})`
     );
@@ -95,9 +81,7 @@ async function createCurrentEventResponse() {
     const lastT1000Cutoff = t1000Cutoff.pop();
     response.addField(
       'Top 1000',
-      `${lastT1000Cutoff.ep} (cập nhật lúc ${moment(
-        parseInt(lastT1000Cutoff.time) * 1000
-      )
+      `${lastT1000Cutoff.ep} (cập nhật lúc ${moment(parseInt(lastT1000Cutoff.time) * 1000)
         .add(7, 'hours')
         .format('H:mm - D/M/YYYY')})`
     );
@@ -116,9 +100,7 @@ async function createFutureEventResponse(eventId) {
   description += `:white_small_square: **Bắt đầu:** ${startDate
     .add(7, 'hours')
     .format('H:mm - D/M/YYYY')} (còn ${timeLeft})\n`;
-  description += `:white_small_square: **Kết thúc:** ${endDate
-    .add(7, 'hours')
-    .format('H:mm - D/M/YYYY')}`;
+  description += `:white_small_square: **Kết thúc:** ${endDate.add(7, 'hours').format('H:mm - D/M/YYYY')}`;
   // Create char bonuses string
   let charBonuses = '';
   event.characters.forEach(char => {
@@ -128,11 +110,9 @@ async function createFutureEventResponse(eventId) {
     .setColor(types[event.attributes[0].attribute].color)
     .setAuthor(event.eventName[1], types[event.attributes[0].attribute].icon)
     .setDescription(description)
-    .addField('Loại', capitalizeFirstLetter(event.eventType), true)
+    .addField('Loại', eventTypeNames[event.eventType], true)
     .addField('Nhân vật', charBonuses, true)
-    .setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`
-    )
+    .setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`)
     .setFooter('Dữ liệu được lấy từ bestdori.com.');
   return response;
 }
@@ -144,12 +124,8 @@ async function createPastEventResponse(eventId) {
   let description = '';
   let startDate = moment(parseInt(event.startAt[1]));
   let endDate = moment(parseInt(event.endAt[1]));
-  description += `:white_small_square: **Bắt đầu:** ${startDate
-    .add(7, 'hours')
-    .format('H:mm - D/M/YYYY')}\n`;
-  description += `:white_small_square: **Kết thúc:** ${endDate
-    .add(7, 'hours')
-    .format('H:mm - D/M/YYYY')}`;
+  description += `:white_small_square: **Bắt đầu:** ${startDate.add(7, 'hours').format('H:mm - D/M/YYYY')}\n`;
+  description += `:white_small_square: **Kết thúc:** ${endDate.add(7, 'hours').format('H:mm - D/M/YYYY')}`;
   let duration = moment.duration(endDate - startDate).asHours();
   let charBonuses = '';
   event.characters.forEach(char => {
@@ -159,35 +135,22 @@ async function createPastEventResponse(eventId) {
     .setColor(types[event.attributes[0].attribute].color)
     .setAuthor(event.eventName[1], types[event.attributes[0].attribute].icon)
     .setDescription(description)
-    .addField('Loại', capitalizeFirstLetter(event.eventType), true)
+    .addField('Loại', eventTypeNames[event.eventType], true)
     .addField('Nhân vật', charBonuses, true)
     .setFooter('Dữ liệu được lấy từ bestdori.com.');
   if (eventId <= 2) {
-    response.setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner-0${14 +
-        eventId * 2}.png`
-    );
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner-0${14 + eventId * 2}.png`);
   } else if (eventId <= 9) {
-    response.setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner_event0${eventId}_open.png`
-    );
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event0${eventId}_open.png`);
   } else if (eventId <= 12) {
-    response.setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}_open.png`
-    );
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}_open.png`);
   } else {
-    response.setImage(
-      `https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`
-    );
+    response.setImage(`https://bestdori.com/assets/en/homebanner_rip/banner_event${eventId}.png`);
   }
   tier.forEach(rank => {
     if (archive[eventId].cutoff[1][rank]) {
       response.addField(`Rank ${rank}`, archive[eventId].cutoff[1][rank], true);
-      response.addField(
-        `Rank ${rank}/h`,
-        Math.floor(archive[eventId].cutoff[1][rank] / duration),
-        true
-      );
+      response.addField(`Rank ${rank}/h`, Math.floor(archive[eventId].cutoff[1][rank] / duration), true);
     }
   });
   return response;
